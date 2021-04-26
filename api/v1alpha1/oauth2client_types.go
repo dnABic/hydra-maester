@@ -122,6 +122,24 @@ type OAuth2ClientSpec struct {
 
 	// Metadata is abritrary data
 	Metadata json.RawMessage `json:"metadata,omitempty"`
+
+	// Client URL that will cause the client to log itself out when rendered in an iframe
+	// by Hydra.
+	FrontchannelLogoutURI string `json:"frontchannelLogoutURI,omitempty"`
+
+	// Boolean flag specifying whether the client requires that a sid (session ID) Claim
+	// be included in the Logout Token to identify the client session with the OP when the
+	// frontchannel-logout-callback is used. If omitted, the default value is false.
+	FrontchannelLogoutSessionRequired bool `json:"frontchannelLogoutSessionRequired"`
+
+	// Client URL that will cause the client to log itself out when sent a Logout Token
+	// by Hydra.
+	BackchannelLogoutURI string `json:"backchannelLogoutURI,omitempty"`
+
+	// Boolean flag specifying whether the client requires that a sid (session ID) Claim
+	// be included in the Logout Token to identify the client session with the OP when the
+	// backchannel-logout-callback is used. If omitted, the default value is false.
+	BackchannelLogoutSessionRequired bool `json:"backchannelLogoutSessionRequired"`
 }
 
 // +kubebuilder:validation:Enum=client_credentials;authorization_code;implicit;refresh_token
@@ -183,17 +201,21 @@ func init() {
 // ToOAuth2ClientJSON converts an OAuth2Client into a OAuth2ClientJSON object that represents an OAuth2 client digestible by ORY Hydra
 func (c *OAuth2Client) ToOAuth2ClientJSON() *hydra.OAuth2ClientJSON {
 	return &hydra.OAuth2ClientJSON{
-		ClientName:              c.Spec.ClientName,
-		GrantTypes:              grantToStringSlice(c.Spec.GrantTypes),
-		ResponseTypes:           responseToStringSlice(c.Spec.ResponseTypes),
-		RedirectURIs:            redirectToStringSlice(c.Spec.RedirectURIs),
-		PostLogoutRedirectURIs:  redirectToStringSlice(c.Spec.PostLogoutRedirectURIs),
-		AllowedCorsOrigins:      redirectToStringSlice(c.Spec.AllowedCorsOrigins),
-		Audience:                c.Spec.Audience,
-		Scope:                   c.Spec.Scope,
-		Owner:                   fmt.Sprintf("%s/%s", c.Name, c.Namespace),
-		TokenEndpointAuthMethod: string(c.Spec.TokenEndpointAuthMethod),
-		Metadata:                c.Spec.Metadata,
+		ClientName:                        c.Spec.ClientName,
+		GrantTypes:                        grantToStringSlice(c.Spec.GrantTypes),
+		ResponseTypes:                     responseToStringSlice(c.Spec.ResponseTypes),
+		RedirectURIs:                      redirectToStringSlice(c.Spec.RedirectURIs),
+		PostLogoutRedirectURIs:            redirectToStringSlice(c.Spec.PostLogoutRedirectURIs),
+		AllowedCorsOrigins:                redirectToStringSlice(c.Spec.AllowedCorsOrigins),
+		Audience:                          c.Spec.Audience,
+		Scope:                             c.Spec.Scope,
+		Owner:                             fmt.Sprintf("%s/%s", c.Name, c.Namespace),
+		TokenEndpointAuthMethod:           string(c.Spec.TokenEndpointAuthMethod),
+		Metadata:                          c.Spec.Metadata,
+		FrontchannelLogoutURI:             c.Spec.FrontchannelLogoutURI,
+		FrontchannelLogoutSessionRequired: c.Spec.FrontchannelLogoutSessionRequired,
+		BackchannelLogoutURI:              c.Spec.BackchannelLogoutURI,
+		BackchannelLogoutSessionRequired:  c.Spec.BackchannelLogoutSessionRequired,
 	}
 }
 
