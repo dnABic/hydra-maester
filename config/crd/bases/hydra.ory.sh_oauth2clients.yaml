@@ -498,6 +498,26 @@ spec:
               - private_key_jwt
               - none
               type: string
+            frontchannelLogoutURI:
+              description: Client URL that will cause the client to log itself out when
+                rendered in an iframe by Hydra.
+              type: string
+            frontchannelLogoutSessionRequired:
+              description: Boolean flag specifying whether the client requires that a 
+                sid (session ID) Claim be included in the Logout Token to identify the 
+                client session with the OP when the frontchannel-logout-callback is used. 
+                If omitted, the default value is false.
+              type: boolean
+            backchannelLogoutURI:
+              description: Client URL that will cause the client to log itself out when
+                sent a Logout Token by Hydra.
+              type: string
+            backchannelLogoutSessionRequired:
+              description: Boolean flag specifying whether the client requires that a
+                sid (session ID) Claim be included in the Logout Token to identify the
+                client session with the OP when the backchannel-logout-callback is used.
+                If omitted, the default value is false.
+              type: boolean
           required:
           - grantTypes
           - scope
